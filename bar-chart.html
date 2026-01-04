@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>2025下半年各App需求平台分布（动态交互）</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; padding: 20px; }
+        .chart-container { width: 800px; height: 600px; margin: 0 auto; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <h1>2025下半年各app在不同平台的需求数量统计</h1>
+    <div class="chart-container">
+        <canvas id="appDemandChart"></canvas>
+    </div>
+
+    <script>
+        // 1. 数据准备（与你的统计一致）
+        const appData = {
+            labels: ['销销乐', '爱回收', '机大侠', '拍机堂', '小黄人'], // 所属App
+            datasets: [
+                {
+                    label: '安卓',
+                    data: [1, 16, 2, 6, 3], // 安卓平台需求数量
+                    backgroundColor: '#66B2FF',
+                    stack: '平台' // 堆叠柱状图的分组标识
+                },
+                {
+                    label: 'iOS',
+                    data: [0, 17, 1, 4, 0], // iOS平台需求数量
+                    backgroundColor: '#FF9999',
+                    stack: '平台'
+                }
+            ]
+        };
+
+        // 2. 获取画布并渲染图表
+        const ctx = document.getElementById('appDemandChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar', // 堆叠柱状图
+            data: appData,
+            options: {
+                indexAxis: 'y', // 横向柱状图（与原图一致）
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    // 图例配置
+                    legend: {
+                        position: 'top',
+                        labels: { font: { size: 14, weight: 'bold' } }
+                    },
+                    // 悬停提示（鼠标经过显示数量）
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleFont: { size: 16, weight: 'bold' },
+                        bodyFont: { size: 14 },
+                        padding: 12,
+                        cornerRadius: 8,
+                        // 自定义提示内容（显示App+平台+数量）
+                        callbacks: {
+                            label: function(context) {
+                                const app = context.label || '';
+                                const platform = context.dataset.label || '';
+                                const count = context.raw || 0;
+                                return `${platform}：${count}个`;
+                            }
+                        }
+                    },
+                    // 标题配置
+                    title: {
+                        display: true,
+                        text: `总需求数：50个（安卓28个 / iOS22个）`,
+                        font: { size: 16, weight: 'bold' },
+                        padding: { bottom: 20 }
+                    }
+                },
+                scales: {
+                    // 横轴（需求数量）配置
+                    x: {
+                        stacked: true, // 堆叠显示
+                        ticks: { font: { size: 12 } },
+                        title: { display: true, text: '需求数量', font: { size: 14 } }
+                    },
+                    // 纵轴（所属App）配置
+                    y: {
+                        stacked: true,
+                        ticks: { font: { size: 12 } },
+                        title: { display: true, text: '所属app', font: { size: 14 } }
+                    }
+                },
+                // 加载动画
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    </script>
+</body>
+</html>
